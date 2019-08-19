@@ -13,18 +13,21 @@
           </el-form-item>
           <el-form-item label="验证码" prop="code">
             <el-input v-model="form.code" style="width:120px;" placeholder="请输入验证码"></el-input>
-            <span class="code">2046</span>
+            <!-- <span class="code" @click="getCode">获取验证码</span> -->
+            <img class="code" @click="getCode" :key="k" src="/apis/api/v0/imageCode"/>
           </el-form-item>
           <el-form-item>
             <el-button type="success" @click="submitForm('form')">立即登录</el-button>
+            <div class="forgetPassword"><span @click="changePassWord">修改密码</span></div>
           </el-form-item>
         </el-form>
       </div>
     </div>
-
+    <my-dialog :visible ='visible' :callBack ='closeDialog' />
   </div>
 </template>
 <script>
+import MyDialog from '@/components/home/changePassword'
 export default {
   data() {
     return {
@@ -43,7 +46,10 @@ export default {
         code: [
           { required: true, message: '请输入验证码', trigger: 'blur' }
         ]
-      }
+      },
+      vsCode: '',
+      k: 0,
+      visible: false
     }
   },
   methods: {
@@ -55,8 +61,23 @@ export default {
             console.log('error submit!!');
             return false;
           }
-        });
+        })
+      },
+      getCode() {
+        this.k++
+      },
+      changePassWord() {
+        this.visible = true
+      },
+      closeDialog(obj) {
+        this.visible = false
+        if (obj) {
+          console.log('接收消息: ',obj)
+        }
       }
+    },
+    components: {
+      MyDialog
     }
 }
 </script>
@@ -64,13 +85,16 @@ export default {
   .container {
     width: 100%;
     height: 100vh;
-    overflow: hidden;
-    background: url('../assets/bg.jpg')
+    background: url('../assets/bg.jpg');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    padding-top: 30px;
   }
   .content {
     width: 350px;
     // height: 500px;
-    margin: 30px auto;
+    margin: 0 auto;
     overflow: hidden;
     h3 {
       text-align: center;
@@ -91,13 +115,19 @@ export default {
         background-size: cover;
       }
       .my-form {
-        padding: 30px 15px 20px;
+        padding: 30px 15px 10px;
         border-radius: 8px;
         background-color: rgba(0,0,0,.5);
         .code {
-          padding: 6px;
-          margin-left: 20px;
-          background-color: lightgreen;
+         vertical-align: middle;
+         margin-left: 10px;
+        }
+        .forgetPassword {
+          color: #fff;
+          text-align: right;
+          span {
+            cursor: pointer;
+          }
         }
       }
     }
